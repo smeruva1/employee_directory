@@ -10,9 +10,10 @@ class App extends Component {
   // Setting this.state.employees to the employees json array
   state = {
     search: "",
-    deparment: "",
-    title: "",
-    location: "",
+    sortEmp: "",
+    // deparment: "",
+    // title: "",
+    // location: "",
     employees: []
   };
 
@@ -21,6 +22,7 @@ class App extends Component {
       .then(res => {
         this.setState({ employees: [... new Set(res.data.results)] })
         console.log(res.data.results);
+        res.data.results.sort(this.compareValues('name'));
       });
   }
 
@@ -33,31 +35,54 @@ class App extends Component {
     });
   };
 
-  // When the form is submitted, search the employees for `this.state.search`
-  // handleFormSubmit = event => {
-  //   event.preventDefault();
 
-  //   console.log("inside handleFormSubmit ************* ");
-  //   console.log(this.state.search.toLowerCase());
-  //   console.log(this.state.employees);
-
-  //   this.state.employees.filter(emp => emp.name.first.toLowerCase() === this.state.search.toLowerCase());
+  // compare = (a, b) => {
+  //   // Use toUpperCase() to ignore character casing
+  //   const firstA = a.first.toUpperCase();
+  //   const firstB = b.first.toUpperCase();
+  
+  //   let comparison = 0;
+  //   if (firstA > firstB) {
+  //     comparison = 1;
+  //   } else if (firstA < firstB) {
+  //     comparison = -1;
+  //   }
+  //   return comparison;
   // };
+  
+  compareValues = (key, order = 'asc') => {
+    return function innerSort(a, b) {
+      console.log('===========');
+      console.log(key);
+      console.log(a);
+      console.log(b);
+
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+      
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+  }
 
 
   // Map over this.state.employees and render a EmployeeCard component for each employee object
   render() {
-    // {
-    //   const headings = [
-    //     'Employee First Name',
-    //     'Employee Last Name',
-    //     'Department',
-    //     'City',
-    //     'State',
-    //   ];
-    //   const rows = this.state.employees;     
-    //   }
-      
+    
     return (
       <div>
         {/* <Title>
@@ -75,13 +100,10 @@ class App extends Component {
           {this.state.employees.filter(({ name }) => {
             const combinedName = `${name.first} ${name.last}`;
             const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
-            console.log(shouldFilter);
+            //console.log(shouldFilter);
             return shouldFilter;
           })
-            //  .sort(
-
-
-            // )
+          .sort(this.compareValues('first'))
             .map(emp => (
 
               <EmployeeCard
