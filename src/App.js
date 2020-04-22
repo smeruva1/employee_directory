@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 import EmployeeCard from "./components/EmployeeCard";
+import EmployeeTable from "./components/EmployeeTable";
 import Wrapper from "./components/Wrapper";
 import Title from "./components/Title";
 import Header from "./components/Header";
 import API from "./utils/API";
 //import { useTable } from 'react-table'
+import * as ReactBootStrap from "react-bootstrap";
+import Table from "react-bootstrap/Table";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+var newKey = "";
 
 class App extends Component {
   // Setting this.state.employees to the employees json array
   state = {
     search: "",
     sortEmp: "",
-    // deparment: "",
-    // title: "",
-    // location: "",
+    toggleCardList: "card",
     employees: []
   };
 
@@ -21,8 +26,8 @@ class App extends Component {
     API.getEmployees()
       .then(res => {
         this.setState({ employees: [... new Set(res.data.results)] })
-        console.log(res.data.results);
-        res.data.results.sort(this.compareValues('name'));
+        //console.log(res.data.results);
+        //res.data.results.sort(this.compareValues('name'));
       });
   }
 
@@ -34,77 +39,114 @@ class App extends Component {
       [name]: value
     });
   };
+   
+  handleToggleClickToCard = () => {
+    this.setState({ toggleCardList: 'card' });
+  };
 
+  handleToggleClickToList = () => {
+    this.setState({ toggleCardList: 'list' });
+  };
 
-  // compare = (a, b) => {
-  //   // Use toUpperCase() to ignore character casing
-  //   const firstA = a.first.toUpperCase();
-  //   const firstB = b.first.toUpperCase();
-  
-  //   let comparison = 0;
-  //   if (firstA > firstB) {
-  //     comparison = 1;
-  //   } else if (firstA < firstB) {
-  //     comparison = -1;
-  //   }
-  //   return comparison;
-  // };
-  
   compareValues = (key, order = 'asc') => {
-    return function innerSort(a, b) {
-      console.log('===========');
-      console.log(key);
-      console.log(a);
-      console.log(b);
 
-      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-        // property doesn't exist on either object
-        return 0;
-      }
-      
-      const varA = (typeof a[key] === 'string')
-        ? a[key].toUpperCase() : a[key];
-      const varB = (typeof b[key] === 'string')
-        ? b[key].toUpperCase() : b[key];
-  
-      let comparison = 0;
-      if (varA > varB) {
-        comparison = 1;
-      } else if (varA < varB) {
-        comparison = -1;
-      }
-      return (
-        (order === 'desc') ? (comparison * -1) : comparison
-      );
+    if (key === "department") {
+      newKey = 'name';
+    } else if (key === "name") {
+      newKey = 'first';
+    }
+
+    return function innerSort(a, b) {
+
+      if (newKey === 'first') {
+
+
+        console.log('===========');
+        console.log(a.name[newKey]);
+        console.log(b.name[newKey]);
+
+
+        if (!a.name.hasOwnProperty(newKey) || !b.name.hasOwnProperty(newKey)) {
+          // property doesn't exist on either object
+          return 0;
+        }
+
+        const varA = (typeof a.name[newKey] === 'string')
+          ? a.name[newKey].toUpperCase() : a.name[newKey];
+        const varB = (typeof b.name[newKey] === 'string')
+          ? b.name[newKey].toUpperCase() : b.name[newKey];
+
+        let comparison = 0;
+        if (varA > varB) {
+          comparison = 1;
+          console.log("comparison = + 1");
+        } else if (varA < varB) {
+          comparison = -1;
+          console.log("comparison = - 1");
+        }
+        return (
+          (order === 'desc') ? (comparison * -1) : comparison
+        );
+
+
+      } else if (newKey === 'name') {
+
+        console.log('===========');
+        console.log(a.id[newKey]);
+        console.log(b.id[newKey]);
+
+        if (!a.id.hasOwnProperty(newKey) || !b.id.hasOwnProperty(newKey)) {
+          // property doesn't exist on either object
+          return 0;
+        }
+
+        const varA = (typeof a.id[newKey] === 'string')
+          ? a.id[newKey].toUpperCase() : a.id[newKey];
+        const varB = (typeof b.id[newKey] === 'string')
+          ? b.id[newKey].toUpperCase() : b.id[newKey];
+
+        let comparison = 0;
+        if (varA > varB) {
+          comparison = 1;
+          console.log("comparison = + 1");
+        } else if (varA < varB) {
+          comparison = -1;
+          console.log("comparison = - 1");
+        }
+        return (
+          (order === 'desc') ? (comparison * -1) : comparison
+        );
+      };
     };
   }
 
 
+
+
   // Map over this.state.employees and render a EmployeeCard component for each employee object
   render() {
-    
+
     return (
       <div>
-        {/* <Title>
-          <h1>ABC - Employee Directory</h1>
-        </Title> */}
         <Header
           search={this.state.search}
-          //handleFormSubmit={this.handleFormSubmit}
+          // sortEmp={this.state.sortEmp}
           handleInputChange={this.handleInputChange}
+          handleToggleClickToList={this.handleToggleClickToList}
+          handleToggleClickToCard={this.handleToggleClickToCard}
         />
 
         <Wrapper>
-          {console.log(this.state.search)}
-
           {this.state.employees.filter(({ name }) => {
             const combinedName = `${name.first} ${name.last}`;
             const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
-            //console.log(shouldFilter);
             return shouldFilter;
           })
-          .sort(this.compareValues('first'))
+            .sort(this.compareValues(this.state.sortEmp))
             .map(emp => (
+
+              // {if({this.state.toggleCardList} === "card") {
+
 
               <EmployeeCard
                 id={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
@@ -115,15 +157,41 @@ class App extends Component {
                 city={emp.location.city}
                 state={emp.location.state}
               />
+              // }
             ))}
+
         </Wrapper>
-        {/* <Wrapper>
-        <Page title="Data table">
-          <DataTable headings={headings} rows={rows} />
-        </Page>
-          
-          
-    </Wrapper> */}
+
+
+        <Wrapper>
+          <Table striped bordered hover>
+            <thead className="tableheader">
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>City</th>
+                <th>State</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.employees.filter(({ name }) => {
+                const combinedName = `${name.first} ${name.last}`;
+                const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
+                return shouldFilter;
+              })
+                .sort(this.compareValues(this.state.sortEmp))
+                .map(emp => (
+                  <EmployeeTable
+                    key={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
+                    empname={emp.name.first + ' ' + emp.name.last}
+                    dept={emp.id.name}
+                    city={emp.location.city}
+                    state={emp.location.state}
+                  />
+                ))}
+            </tbody>
+          </Table>
+        </Wrapper>
       </div>
     );
   }

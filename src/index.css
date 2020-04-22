@@ -8,3 +8,8 @@ html, body, #root {
   margin: 0;
   height: 100%;
 }
+
+.tableheader {
+  table-layout: fixed;
+  width: 100%;
+}

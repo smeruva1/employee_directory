@@ -26,7 +26,12 @@ function Header(props) {
                 />
             </div>
             <div className="mx-auto radioButtonCenter">
-                <RadioButtons />
+                <RadioButtons 
+                // sortEmp={props.sortEmp}
+                handleInputChange={props.handleInputChange}
+                handleToggleClickToList={props.handleToggleClickToList}
+                handleToggleClickToCard = {props.handleToggleClickToCard}
+                />
             </div>
             
         </div>
