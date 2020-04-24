@@ -20,8 +20,7 @@ function Header(props) {
 
             <div className="mx-auto searchCenter">
                 <Search 
-                search={props.search}
-                // handleFormSubmit={props.handleFormSubmit}
+                search={props.search}                
                 handleInputChange={props.handleInputChange}
                 />
             </div>

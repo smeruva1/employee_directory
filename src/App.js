@@ -5,7 +5,6 @@ import Wrapper from "./components/Wrapper";
 import Title from "./components/Title";
 import Header from "./components/Header";
 import API from "./utils/API";
-//import { useTable } from 'react-table'
 import * as ReactBootStrap from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -65,13 +64,9 @@ class App extends Component {
     return function innerSort(a, b) {
 
       if (newKey === 'first') {
-
-
-        console.log('===========');
-        console.log(a.name[newKey]);
-        console.log(b.name[newKey]);
-
-
+        // console.log('===========');
+        // console.log(a.name[newKey]);
+        // console.log(b.name[newKey]);
         if (!a.name.hasOwnProperty(newKey) || !b.name.hasOwnProperty(newKey)) {
           // property doesn't exist on either object
           return 0;
@@ -145,16 +140,14 @@ class App extends Component {
         <Header
           search={this.state.search}
           // sortEmp={this.state.sortEmp}
-          btnStatusTrue = {this.state.btnStatusTrue}
-          btnStatusFalse = {this.state.btnStatusFalse}
+          btnStatusTrue={this.state.btnStatusTrue}
+          btnStatusFalse={this.state.btnStatusFalse}
           handleInputChange={this.handleInputChange}
           handleToggleClickToList={this.handleToggleClickToList}
           handleToggleClickToCard={this.handleToggleClickToCard}
         />
 
-
         {this.state.toggleCardList === 'card' ? (
-
           <Wrapper>
             {this.filterEmployees().length ? this.filterEmployees()
               .sort(this.compareValues(this.state.sortEmp))
@@ -168,11 +161,9 @@ class App extends Component {
                   city={emp.location.city}
                   state={emp.location.state}
                 />
-
               )) : <h3>No Employees found!! </h3>}
 
           </Wrapper>
-
         ) : (
             <Wrapper>
               <Table striped bordered hover>
@@ -185,7 +176,7 @@ class App extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                {this.filterEmployees().length ? this.filterEmployees()
+                  {this.filterEmployees().length ? this.filterEmployees()
                     .sort(this.compareValues(this.state.sortEmp))
                     .map(emp => (
                       <EmployeeTable
@@ -196,7 +187,7 @@ class App extends Component {
                         state={emp.location.state}
                       />
                     ))
-                     : <h3>No Employees found!! </h3>}    
+                    : <h3>No Employees found!! </h3>}
                 </tbody>
               </Table>
             </Wrapper>
