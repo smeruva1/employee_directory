@@ -28,6 +28,8 @@ function Header(props) {
             <div className="mx-auto radioButtonCenter">
                 <RadioButtons 
                 // sortEmp={props.sortEmp}
+                btnStatusTrue = {props.btnStatusTrue}
+                btnStatusFalse = {props.btnStatusFalse}
                 handleInputChange={props.handleInputChange}
                 handleToggleClickToList={props.handleToggleClickToList}
                 handleToggleClickToCard = {props.handleToggleClickToCard}

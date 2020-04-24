@@ -19,6 +19,8 @@ class App extends Component {
     search: "",
     sortEmp: "",
     toggleCardList: "card",
+    btnStatusFalse: "",
+    btnStatusTrue: "true",
     employees: []
   };
 
@@ -39,13 +41,17 @@ class App extends Component {
       [name]: value
     });
   };
-   
+
   handleToggleClickToCard = () => {
-    this.setState({ toggleCardList: 'card' });
+    this.setState({ toggleCardList: 'list' });
+    this.setState({ btnStatusFalse: 'true' });
+    this.setState({ btnStatusTrue: "" });
   };
 
   handleToggleClickToList = () => {
-    this.setState({ toggleCardList: 'list' });
+    this.setState({ toggleCardList: 'card' });
+    this.setState({ btnStatusFalse: "" });
+    this.setState({ btnStatusTrue: "true" });
   };
 
   compareValues = (key, order = 'asc') => {
@@ -120,7 +126,15 @@ class App extends Component {
     };
   }
 
+  filterEmployees = () => {
 
+    const filterList = this.state.employees.filter(({ name }) => {
+      const combinedName = `${name.first} ${name.last}`;
+      const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
+      return shouldFilter;
+    })
+    return filterList;
+  }
 
 
   // Map over this.state.employees and render a EmployeeCard component for each employee object
@@ -131,67 +145,62 @@ class App extends Component {
         <Header
           search={this.state.search}
           // sortEmp={this.state.sortEmp}
+          btnStatusTrue = {this.state.btnStatusTrue}
+          btnStatusFalse = {this.state.btnStatusFalse}
           handleInputChange={this.handleInputChange}
           handleToggleClickToList={this.handleToggleClickToList}
           handleToggleClickToCard={this.handleToggleClickToCard}
         />
 
-        <Wrapper>
-          {this.state.employees.filter(({ name }) => {
-            const combinedName = `${name.first} ${name.last}`;
-            const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
-            return shouldFilter;
-          })
-            .sort(this.compareValues(this.state.sortEmp))
-            .map(emp => (
 
-              // {if({this.state.toggleCardList} === "card") {
+        {this.state.toggleCardList === 'card' ? (
 
+          <Wrapper>
+            {this.filterEmployees().length ? this.filterEmployees()
+              .sort(this.compareValues(this.state.sortEmp))
+              .map(emp => (
+                <EmployeeCard
+                  id={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
+                  key={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
+                  empname={emp.name.first + ' ' + emp.name.last}
+                  image={emp.picture.large}
+                  dept={emp.id.name}
+                  city={emp.location.city}
+                  state={emp.location.state}
+                />
 
-              <EmployeeCard
-                id={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
-                key={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
-                empname={emp.name.first + ' ' + emp.name.last}
-                image={emp.picture.large}
-                dept={emp.id.name}
-                city={emp.location.city}
-                state={emp.location.state}
-              />
-              // }
-            ))}
+              )) : <h3>No Employees found!! </h3>}
 
-        </Wrapper>
+          </Wrapper>
 
-
-        <Wrapper>
-          <Table striped bordered hover>
-            <thead className="tableheader">
-              <tr>
-                <th>Name</th>
-                <th>Department</th>
-                <th>City</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.employees.filter(({ name }) => {
-                const combinedName = `${name.first} ${name.last}`;
-                const shouldFilter = combinedName.toLowerCase().includes(this.state.search.toLowerCase());
-                return shouldFilter;
-              })
-                .sort(this.compareValues(this.state.sortEmp))
-                .map(emp => (
-                  <EmployeeTable
-                    key={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
-                    empname={emp.name.first + ' ' + emp.name.last}
-                    dept={emp.id.name}
-                    city={emp.location.city}
-                    state={emp.location.state}
-                  />
-                ))}
-            </tbody>
-          </Table>
-        </Wrapper>
+        ) : (
+            <Wrapper>
+              <Table striped bordered hover>
+                <thead className="tableheader">
+                  <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>City</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {this.filterEmployees().length ? this.filterEmployees()
+                    .sort(this.compareValues(this.state.sortEmp))
+                    .map(emp => (
+                      <EmployeeTable
+                        key={emp.id.value + ' ' + emp.picture.large + ' ' + emp.name.first + ' ' + emp.name.last}
+                        empname={emp.name.first + ' ' + emp.name.last}
+                        dept={emp.id.name}
+                        city={emp.location.city}
+                        state={emp.location.state}
+                      />
+                    ))
+                     : <h3>No Employees found!! </h3>}    
+                </tbody>
+              </Table>
+            </Wrapper>
+          )}
       </div>
     );
   }

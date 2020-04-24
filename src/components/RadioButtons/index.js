@@ -15,16 +15,16 @@ function RadioButtons(props) {
                     <form>
                         <fieldset id="sortEmp">
                             <input type="radio" id="name" value="name" name="sortEmp" className="ml-3"
-                                                            onChange={props.handleInputChange}
+                                onChange={props.handleInputChange}
                             //    value={props.sortEmp}
                             />
                             <label for="name">Name</label>
                             <input type="radio" id="department" value="department" name="sortEmp" className="ml-3"
                                 onChange={props.handleInputChange}
-                                // value={props.sortEmp}
+                            // value={props.sortEmp}
                             />
                             <label for="department">Department</label>
-                            
+
                         </fieldset>
                     </form>
 
@@ -32,6 +32,8 @@ function RadioButtons(props) {
                 </div>
 
                 <ToggleButtons
+                    btnStatusTrue={props.btnStatusTrue}
+                    btnStatusFalse={props.btnStatusFalse}
                     handleToggleClickToList={props.handleToggleClickToList}
                     handleToggleClickToCard={props.handleToggleClickToCard}
                 />
